@@ -1,0 +1,10 @@
+{
+	"id": "obsidian-tailwindcss-sample-plugin",
+	"name": "Obsidian TailwindCSS Sample Plugin",
+	"version": "1.0.0",
+	"minAppVersion": "0.15.0",
+	"description": "A sample plugin for Obsidian using TailwindCSS.",
+	"author": "Zero Liu",
+	"authorUrl": "https://github.com/zeroliu/obsidian-tailwindcss",
+	"isDesktopOnly": false
+}
