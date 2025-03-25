@@ -1,0 +1,156 @@
+ # Obsidian Plugin Development Setup
+
+This project uses a modern web development stack for Obsidian plugin development:
+- Vite for build tooling
+- React for UI components
+- TypeScript for type safety
+- Tailwind CSS for styling
+
+## Obsidian Docs
+
+### Obsidian Plugin Getting Started
+
+
+### Obsidian Typescript API
+Reference: [Obsidian-Typescript-API.txt](mdc:.llms-docs/Obsidian-Typescript-API.txt)
+
+
+## Project Structure
+
+```
+.
+├── src/               # Source code directory
+├── styles.css         # Compiled CSS output
+├── tailwind.config.ts # Tailwind configuration
+├── vite.config.ts     # Vite build configuration
+├── tsconfig.json      # TypeScript configuration
+└── package.json       # Project dependencies and scripts
+```
+
+## Key Configuration Files
+
+### Vite Configuration (vite.config.ts)
+- Builds to CommonJS format for Obsidian compatibility
+- Handles external dependencies including Obsidian's built-in modules
+- Outputs `main.js` and `styles.css`
+- Development mode with watch functionality
+- Production builds with minification
+
+### Tailwind Configuration (tailwind.config.ts)
+- Maps to Obsidian's CSS variables for colors and design tokens
+- Custom configuration for:
+  - Border radius
+  - Font sizes
+  - Z-index layers
+  - Icon stroke widths
+  - Extended theme utilities
+
+### Build Scripts
+```json
+{
+  "dev": "vite build --mode development --watch",
+  "build": "tsc -noEmit -skipLibCheck && vite build --mode production"
+}
+```
+
+## Development Guidelines
+
+### Styling
+- Use Tailwind utility classes that map to Obsidian's design system
+- Colors use Obsidian's CSS variables (e.g., `var(--color-base-00)`)
+- Maintain Obsidian's z-index layering system
+- Follow Obsidian's border radius and spacing conventions
+
+### Component Development
+- Use functional React components with TypeScript
+- Follow Obsidian's UI patterns and conventions
+- Ensure components work with Obsidian's theme system
+
+### Build Process
+1. Development:
+   - Run `npm run dev` for watch mode
+   - Changes automatically rebuild
+   - Source maps enabled for debugging
+
+2. Production:
+   - Run `npm run build`
+   - TypeScript type checking
+   - Minified output
+   - No source maps
+
+### Version Management
+- Use `npm run version` to bump plugin version
+- Updates manifest.json and versions.json
+- Automatically stages version files
+
+## Important Notes
+
+1. **CSS Variables**
+   - All colors should use Obsidian's CSS variables
+   - Maintain dark/light theme compatibility
+   - Use semantic color names (e.g., `text-normal`, `background-primary`)
+
+2. **Build Output**
+   - Main entry point: `main.js`
+   - Styles: `styles.css`
+   - No CSS code splitting (required for Obsidian)
+
+3. **External Dependencies**
+   - Properly marked as external in Vite config
+   - Includes Obsidian's built-in modules
+   - Prevents duplicate dependencies
+
+4. **TypeScript**
+   - Strict type checking enabled
+   - React types included
+   - Skip lib check for Obsidian types
+
+## Best Practices
+
+1. **Component Structure**
+   ```typescript
+   import React from 'react';
+   
+   interface Props {
+     // Define props interface
+   }
+   
+   export const Component: React.FC<Props> = ({ prop1, prop2 }) => {
+     // Component implementation
+   };
+   ```
+
+2. **Styling**
+   ```tsx
+   // Use Tailwind classes that map to Obsidian variables
+   <div className="bg-background-primary text-text-normal">
+     Content
+   </div>
+   ```
+
+3. **Theme Compatibility**
+   - Test components in both light and dark themes
+   - Use semantic color variables
+   - Avoid hardcoded colors
+
+4. **Performance**
+   - Keep bundle size minimal
+   - Use React.memo for expensive components
+   - Lazy load when appropriate
+
+## Troubleshooting
+
+1. **Build Issues**
+   - Check external dependencies in vite.config.ts
+   - Verify TypeScript types
+   - Ensure CSS variables are properly defined
+
+2. **Styling Problems**
+   - Verify Tailwind classes map to Obsidian variables
+   - Check z-index layering
+   - Ensure theme compatibility
+
+3. **Development Workflow**
+   - Use watch mode for development
+   - Check console for build errors
+   - Verify manifest.json updates

@@ -1,57 +1,109 @@
-import { ExampleView, VIEW_TYPE_EXAMPLE } from "@/ExampleView";
+import { SmartReaderView, VIEW_TYPE_SMART_READER } from "./SmartReaderView";
 import {
-	App,
+	App as ObsidianApp,
 	Plugin,
 	PluginSettingTab,
 	Setting,
 	WorkspaceLeaf,
 } from "obsidian";
 import "@/index.css";
+import { StorageService } from "@/lib/services/storage.service";
+import { testContentChunkingCommand } from "./commands/testContentChunking";
 
-// Remember to rename these classes and interfaces!
-
-interface MyPluginSettings {
-	mySetting: string;
+/**
+ * Settings interface for the Smart Reader plugin
+ */
+interface SmartReaderSettings {
+	savePath: string;
+	template: string;
+	dateFormat: string;
 }
 
-const DEFAULT_SETTINGS: MyPluginSettings = {
-	mySetting: "default",
+/**
+ * Default settings for the Smart Reader plugin
+ */
+const DEFAULT_SETTINGS: SmartReaderSettings = {
+	savePath: "",
+	template: "# {{title}}\n\n{{content}}",
+	dateFormat: "YYYY-MM-DD",
 };
 
-export default class MyPlugin extends Plugin {
-	settings: MyPluginSettings;
+/**
+ * Main plugin class for the Smart Reader plugin
+ */
+/**
+ * Main plugin class for the Smart Reader plugin
+ * Following Single Responsibility Principle with proper type safety
+ */
+export default class SmartReaderPlugin extends Plugin {
+	settings: SmartReaderSettings;
+	storageService: StorageService;
+	// Add data property to store plugin data
+	data: Record<string, any> = {};
 
+	/**
+	 * Initialize the plugin
+	 * Following Single Responsibility Principle by separating initialization steps
+	 */
 	async onload() {
+		// Load settings first
 		await this.loadSettings();
 
-		this.registerView(VIEW_TYPE_EXAMPLE, (leaf) => new ExampleView(leaf));
+		// Initialize data structure if needed
+		if (!this.data) {
+			this.data = {};
+		}
 
-		// This creates an icon in the left ribbon.
-		const ribbonIconEl = this.addRibbonIcon("dice", "Sample Plugin", () => {
+		// Initialize the storage service with proper type safety
+		this.storageService = new StorageService(this);
+		
+		// Verify storage service is working
+		console.log('SmartReaderPlugin: Initializing storage service');
+		const articles = await this.storageService.loadArticles();
+		console.log(`SmartReaderPlugin: Loaded ${articles.length} articles on startup`);
+
+		// Register the Smart Reader view
+		this.registerView(VIEW_TYPE_SMART_READER, (leaf) => {
+			const view = new SmartReaderView(leaf, this.storageService);
+			view.icon = "album";
+			return view;
+		});
+
+		// Add ribbon icon to activate the Smart Reader view
+		const ribbonIconEl = this.addRibbonIcon("album", "Smart Reader", () => {
 			this.activateView();
 		});
-		// Perform additional things with the ribbon
-		ribbonIconEl.addClass("my-plugin-ribbon-class");
+		ribbonIconEl.addClass("smart-reader-ribbon-class");
 
-		// This adds a status bar item to the bottom of the app. Does not work on mobile apps.
-		const statusBarItemEl = this.addStatusBarItem();
-		statusBarItemEl.setText("Status Bar Text");
+		// Add command to open the Smart Reader view
+		this.addCommand({
+			id: 'open-smart-reader',
+			name: 'Open Smart Reader',
+			callback: () => this.activateView(),
+		});
 
-		// This adds a settings tab so the user can configure various aspects of the plugin
-		this.addSettingTab(new SampleSettingTab(this.app, this));
+		// Add command to test content chunking functionality
+		this.addCommand({
+			id: testContentChunkingCommand.id,
+			name: testContentChunkingCommand.name,
+			callback: () => testContentChunkingCommand.execute(this),
+		});
+
+		// Add settings tab
+		this.addSettingTab(new SmartReaderSettingTab(this.app, this));
 	}
 
 	async activateView() {
 		const { workspace } = this.app;
 
 		let leaf: WorkspaceLeaf | null = null;
-		const leaves = workspace.getLeavesOfType(VIEW_TYPE_EXAMPLE);
+		const leaves = workspace.getLeavesOfType(VIEW_TYPE_SMART_READER);
 
 		if (leaves.length > 0) {
 			leaf = leaves[0];
 		} else {
 			leaf = workspace.getRightLeaf(false);
-			await leaf?.setViewState({ type: VIEW_TYPE_EXAMPLE, active: true });
+			await leaf?.setViewState({ type: VIEW_TYPE_SMART_READER, active: true });
 		}
 
 		if (leaf) {
@@ -61,23 +113,56 @@ export default class MyPlugin extends Plugin {
 
 	onunload() {}
 
+	/**
+	 * Load plugin settings from Obsidian storage
+	 * Using proper TypeScript type safety
+	 */
 	async loadSettings() {
+		// Load data first
+		const data = await this.loadData();
+		console.log('SmartReaderPlugin: Loaded data from storage:', data);
+		
+		// Merge with default settings
 		this.settings = Object.assign(
 			{},
 			DEFAULT_SETTINGS,
-			await this.loadData()
+			data?.settings || {}
 		);
+		
+		// Initialize data structure if needed
+		if (!this.data) {
+			this.data = {};
+		}
+		
+		// Store settings in data object
+		this.data.settings = this.settings;
 	}
 
+	/**
+	 * Save plugin settings to Obsidian storage
+	 * Using proper TypeScript type safety
+	 */
 	async saveSettings() {
-		await this.saveData(this.settings);
+		// Initialize data structure if needed
+		if (!this.data) {
+			this.data = {};
+		}
+		
+		// Store settings in data object
+		this.data.settings = this.settings;
+		
+		// Save all data
+		await this.saveData(this.data);
 	}
 }
 
-class SampleSettingTab extends PluginSettingTab {
-	plugin: MyPlugin;
+/**
+ * Settings tab for the Smart Reader plugin
+ */
+class SmartReaderSettingTab extends PluginSettingTab {
+	plugin: SmartReaderPlugin;
 
-	constructor(app: App, plugin: MyPlugin) {
+	constructor(app: ObsidianApp, plugin: SmartReaderPlugin) {
 		super(app, plugin);
 		this.plugin = plugin;
 	}
@@ -86,16 +171,45 @@ class SampleSettingTab extends PluginSettingTab {
 		const { containerEl } = this;
 
 		containerEl.empty();
+		containerEl.createEl('h2', { text: 'Smart Reader Settings' });
 
 		new Setting(containerEl)
-			.setName("Setting #1")
-			.setDesc("It's a secret")
+			.setName("Save Path")
+			.setDesc("Path where articles will be saved (optional)")
 			.addText((text) =>
 				text
-					.setPlaceholder("Enter your secret")
-					.setValue(this.plugin.settings.mySetting)
+					.setPlaceholder("Example: Articles/Read It Later/")
+					.setValue(this.plugin.settings.savePath)
 					.onChange(async (value) => {
-						this.plugin.settings.mySetting = value;
+						this.plugin.settings.savePath = value;
+						await this.plugin.saveSettings();
+					})
+			);
+
+		new Setting(containerEl)
+			.setName("Note Template")
+			.setDesc("Template for creating notes from articles. Available variables: {{title}}, {{content}}, {{url}}, {{date}}")
+			.addTextArea((text) => {
+				text
+					.setPlaceholder("# {{title}}\n\n{{content}}")
+					.setValue(this.plugin.settings.template)
+					.onChange(async (value) => {
+						this.plugin.settings.template = value;
+						await this.plugin.saveSettings();
+					});
+				text.inputEl.rows = 6;
+				text.inputEl.cols = 40;
+			});
+
+		new Setting(containerEl)
+			.setName("Date Format")
+			.setDesc("Format for the {{date}} variable in the template")
+			.addText((text) =>
+				text
+					.setPlaceholder("YYYY-MM-DD")
+					.setValue(this.plugin.settings.dateFormat)
+					.onChange(async (value) => {
+						this.plugin.settings.dateFormat = value;
 						await this.plugin.saveSettings();
 					})
 			);

@@ -24,7 +24,14 @@ export default defineConfig(async ({ mode }) => {
 			minify: prod,
 			sourcemap: prod ? false : "inline",
 			outDir: "./",
-			cssCodeSplit: false,
+			// Enable CSS code splitting to better handle scoping
+			cssCodeSplit: true,
+			css: {
+				// Ensure CSS modules for better scoping
+				modules: {
+					scopeBehaviour: 'local',
+				},
+			},
 			emptyOutDir: false,
 			rollupOptions: {
 				input: {

@@ -1,9 +1,9 @@
 {
-	"id": "obsidian-tailwindcss-sample-plugin",
-	"name": "Obsidian TailwindCSS Sample Plugin",
+	"id": "obsidian-smart-reader",
+	"name": "Smart Reader",
 	"version": "1.0.0",
 	"minAppVersion": "0.15.0",
-	"description": "A sample plugin for Obsidian using TailwindCSS.",
+	"description": "A smart reading companion for Obsidian that helps you save and organize web content for later reading.",
 	"author": "Zero Liu",
 	"authorUrl": "https://github.com/zeroliu/obsidian-tailwindcss",
 	"isDesktopOnly": false

@@ -1,0 +1,251 @@
+/* Reader View Styles */
+.reader-view-content {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  color: var(--text-normal);
+  line-height: 1.6;
+}
+
+/* Content Element Wrapper Styles */
+.content-element-wrapper {
+  position: relative;
+  transition: background-color 0.2s ease;
+  border-radius: 4px;
+  margin: 0;
+  padding: 0;
+  /* Ensure text selection works */
+  user-select: text;
+  cursor: text;
+}
+
+/* Hover state to indicate interactive elements */
+.content-element-wrapper:hover {
+  background-color: rgba(var(--interactive-accent-rgb), 0.05);
+  outline: 1px dashed rgba(var(--interactive-accent-rgb), 0.2);
+}
+
+/* Active state when context menu is triggered */
+.content-element-wrapper.context-menu-active {
+  background-color: rgba(var(--interactive-accent-rgb), 0.1);
+  outline: 1px solid rgba(var(--interactive-accent-rgb), 0.3);
+}
+
+/* Highlighted element styles */
+.content-element-wrapper.highlighted {
+  background-color: rgba(var(--interactive-accent-rgb), 0.15);
+  outline: 2px solid rgba(var(--interactive-accent-rgb), 0.4);
+}
+
+/* Ensure context menu has proper background and isn't transparent */
+.context-menu-content {
+  background-color: var(--background-primary) !important;
+  border: 1px solid var(--background-modifier-border) !important;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
+  /* Ensure context menu text isn't selectable */
+  user-select: none;
+  cursor: default;
+}
+
+/* Batch actions container */
+.batch-actions {
+  background-color: var(--background-secondary);
+  border: 1px solid var(--background-modifier-border);
+  /* Ensure batch actions text isn't selectable */
+  user-select: none;
+  cursor: default;
+}
+
+.reader-view-content h1,
+.reader-view-content h2,
+.reader-view-content h3,
+.reader-view-content h4,
+.reader-view-content h5,
+.reader-view-content h6 {
+  margin-top: 1.5em;
+  margin-bottom: 0.75em;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--text-normal);
+}
+
+.reader-view-content h1 {
+  font-size: 1.8em;
+}
+
+.reader-view-content h2 {
+  font-size: 1.5em;
+}
+
+.reader-view-content h3 {
+  font-size: 1.3em;
+}
+
+.reader-view-content p {
+  margin-bottom: 1.2em;
+}
+
+.reader-view-content a {
+  color: var(--interactive-accent);
+  text-decoration: none;
+}
+
+.reader-view-content a:hover {
+  text-decoration: underline;
+}
+
+.reader-view-content img {
+  max-width: 100%;
+  height: auto;
+  margin: 1.5em 0;
+  border-radius: 4px;
+}
+
+/* Ensure content elements maintain proper spacing */
+.content-element-wrapper p,
+.content-element-wrapper h1,
+.content-element-wrapper h2,
+.content-element-wrapper h3,
+.content-element-wrapper h4,
+.content-element-wrapper h5,
+.content-element-wrapper h6,
+.content-element-wrapper ul,
+.content-element-wrapper ol,
+.content-element-wrapper img {
+  margin: inherit;
+  padding: inherit;
+}
+
+/* Add subtle transition for deletion */
+.content-element-wrapper.deleting {
+  opacity: 0.5;
+  transform: scale(0.98);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* Custom context menu styling to match Obsidian theme */
+.context-menu-content {
+  background-color: var(--background-primary) !important;
+  border-color: var(--background-modifier-border) !important;
+  color: var(--text-normal) !important;
+}
+
+/* Ensure proper spacing for lists */
+.reader-view-content ul,
+.reader-view-content ol {
+  margin-bottom: 1.2em;
+  padding-left: 1.5em;
+}
+
+/* Style for code blocks */
+.reader-view-content pre,
+.reader-view-content code {
+  background-color: var(--background-secondary);
+  border-radius: 3px;
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+  font-size: 0.9em;
+  padding: 0.2em 0.4em;
+}
+
+.reader-view-content pre {
+  padding: 1em;
+  overflow-x: auto;
+  margin: 1.5em 0;
+}
+
+.reader-view-content blockquote {
+  border-left: 3px solid var(--interactive-accent);
+  margin: 1.5em 0;
+  padding: 0.5em 0 0.5em 1em;
+  font-style: italic;
+  background-color: var(--background-modifier-border);
+  border-radius: 0 4px 4px 0;
+}
+
+.reader-view-content pre,
+.reader-view-content code {
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  background-color: var(--background-modifier-border);
+  border-radius: 3px;
+}
+
+.reader-view-content pre {
+  padding: 1em;
+  overflow-x: auto;
+  margin: 1.5em 0;
+}
+
+.reader-view-content code {
+  padding: 0.2em 0.4em;
+  font-size: 0.9em;
+}
+
+.reader-view-content ul,
+.reader-view-content ol {
+  margin: 1em 0 1.5em 1.5em;
+}
+
+.reader-view-content li {
+  margin-bottom: 0.5em;
+}
+
+.reader-view-content hr {
+  border: none;
+  border-top: 1px solid var(--background-modifier-border);
+  margin: 2em 0;
+}
+
+.reader-view-content table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1.5em 0;
+}
+
+/* Ensure content is selectable */
+.selectable-content {
+  user-select: text;
+  cursor: text;
+  pointer-events: auto;
+}
+
+/* Fix for context menu interaction */
+[data-selectable="true"] {
+  pointer-events: auto !important;
+}
+
+/* Ensure all content has text cursor for better selection experience */
+.content-element-wrapper,
+.content-element-wrapper * {
+  cursor: text;
+}
+
+/* Override any potential interference with text selection */
+.reader-view-content * {
+  user-select: text;
+}
+
+.reader-view-content th,
+.reader-view-content td {
+  border: 1px solid var(--background-modifier-border);
+  padding: 0.5em;
+}
+
+.reader-view-content th {
+  background-color: var(--background-modifier-hover);
+  font-weight: 600;
+}
+
+/* Dark mode adjustments */
+.theme-dark .reader-view-content {
+  color: var(--text-normal);
+}
+
+/* Transition for font size changes */
+.reader-view-content {
+  transition: font-size 0.2s ease;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .reader-view-content {
+    font-size: 16px;
+  }
+}

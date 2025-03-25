@@ -1,0 +1,7 @@
+Obsidian Docs For Getting Started:
+https://docs.obsidian.md/Plugins/Getting+started/Mobile+development
+https://docs.obsidian.md/Plugins/Getting+started/Development+workflow
+https://docs.obsidian.md/Plugins/Getting+started/Build+a+plugin
+https://docs.obsidian.md/Plugins/Getting+started/Anatomy+of+a+plugin
+https://docs.obsidian.md/Plugins/Getting+started/Use+Svelte+in+your+plugin
+https://docs.obsidian.md/Plugins/Getting+started/Use+React+in+your+plugin

@@ -23,6 +23,8 @@ export class ExampleView extends ItemView {
 	async onOpen() {
 		const container = this.containerEl.children[1];
 		container.empty();
+		// Add the scoping class to the container element
+		container.addClass('obsidian-read-it-later-plugin');
 		this.root = createRoot(container);
 		this.root.render(
 			<StrictMode>
